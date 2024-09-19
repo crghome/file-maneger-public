@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "base/_variables.scss";
+@import "base/_twc_typography.scss";
+@import "twc-utilities/_twc_mixin.scss";
+@import "twc-utilities/_twc_grid.scss";
+@import "twc-components/_twc_buttons.scss";
+@import "twc-components/_twc_modal.scss";
+@import "twc-components/_twc_alert_block.scss";
+
+@import "vue/_transitions.scss";
+@import "vue/_loader.scss";
+@import "vue/_head_content.scss";
+@import "vue/_file_loader.scss";
+

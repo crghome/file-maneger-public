@@ -1,0 +1,16 @@
+.wrapperAlertBlock{
+    padding: 15px 30px;
+    position: relative;
+    display: flex;
+    column-gap: 30px;
+    color: #fff;
+    background-color: #00f;
+    border-radius: 12px;
+    .icon{
+        flex: 0 0 60px;
+        font-size: 60px;
+    }
+    .text{
+        font-size: 16px;
+    }
+}

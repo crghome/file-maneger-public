@@ -1,0 +1,64 @@
+@layer utilities {
+    // for developer
+    // .tw-container{ box-shadow: inset 0 0 8px rgb(135, 0, 185); }
+    // .twc-grid{ border: 1px solid green; }
+    // .twc-container{ border: 1px solid rgb(31, 15, 254); }
+
+
+    .twc-grid{
+        @apply tw-grid tw-gap-columns;
+    }
+
+    .twc-container{
+        // for all screen resolution
+        // @apply tw-container
+        //     xs:tw-max-w-[theme('maxWidth.screen.xs')] 
+        //     sm:tw-max-w-[theme('maxWidth.screen.sm')] 
+        //     md:tw-max-w-[theme('maxWidth.screen.md')] 
+        //     lg:tw-max-w-[theme('maxWidth.screen.lg')] 
+        //     xl:tw-max-w-[theme('maxWidth.screen.xl')] 
+        //     xxl:tw-max-w-[theme('maxWidth.screen.xxl')] 
+        //     xxxl:tw-max-w-[theme('maxWidth.screen.xxxl')] 
+        //     fhd:tw-max-w-[theme('maxWidth.screen.xxxl')] 
+        //     2k:tw-max-w-[theme('maxWidth.screen.xxxl')] 
+        //     4k:tw-max-w-[theme('maxWidth.screen.xxxl')];
+        // for only max
+        @apply tw-container
+            xxxl:tw-max-w-[theme('screens.xxxl')];
+    }
+
+    .twc-row{
+        @apply tw-flex tw-flex-wrap;
+        margin-left: calc(theme('gap.columns')*-.5);
+        margin-right: calc(theme('gap.columns')*-.5);
+        // border: 1px dashed yellow;
+    }
+    .twc-row-center{
+        @apply twc-row;
+        justify-content: center;
+    }
+
+    *[class*="twc-col"]{
+        padding-left: calc(theme('gap.columns')*.5);
+        padding-right: calc(theme('gap.columns')*.5);
+        // border: 1px dashed rgb(22, 62, 237);
+    }
+    *[class*="twc-col-"]{
+        flex: 0 0 auto;
+    }
+
+    .twc-col-12{
+        @apply tw-basis-full tw-w-full;
+    }
+    @for $i from 1 through 11 {
+        .twc-col-#{$i}{
+            @apply tw-basis-#{$i}/12 tw-w-#{$i}/12;
+        }
+    }
+    .twc-col{
+        @apply tw-w-auto;
+        flex: 1 1 auto;
+        background-color: green;
+    }
+
+}
