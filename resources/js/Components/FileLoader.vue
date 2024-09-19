@@ -173,8 +173,8 @@ export default {
                     }).catch(function(error){
                         console.log(error);
                         let response = error.response;
-                        let status = response.status ? response.status : 0;
-                        let message = response.statusText ? response.statusText : error.message;
+                        let status = response.status??'';
+                        let message = response.statusText??error.message??'Не известная ошибка';
                         message = message + ' [' + response.data.message + ']';
                         _this.arrErrors.push({status: status, message: 'Не загрузили "'+filesCopy[i].name+'" - '+message});
                         // return false;
@@ -209,7 +209,7 @@ export default {
 
         exceptionsHandler(error){
             let response = error.response;
-            let status = response.status ? response.status : 0;
+            let status = response.status??0;
             switch (status){
                 case 413:
                     window.getAlert('error', 'Ошибка', 'Слишком долгая загрузка файла, проверьте интернет и размер файла')
