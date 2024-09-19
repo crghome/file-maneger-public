@@ -17,3 +17,19 @@ window.getAlert = function (type, label, message){
     });
     document.dispatchEvent(ev);
 }
+
+window.exceptionsHandler = function(error){
+    let response = error.response??{};
+    let status = response.status??0;
+    switch (status){
+        case 413:
+            window.getAlert('error', 'Ошибка', 'Слишком долгая загрузка файла, проверьте интернет и размер файла')
+            break;
+        default:
+            response.statusText
+                ? window.getAlert('error', 'Ошибка ' + status, response.statusText)
+                : window.getAlert('error', 'Ошибка ' + status, error);
+            break;
+    }
+}
+

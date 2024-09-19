@@ -15,6 +15,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'noImage' => '/img/noImg.jpg',
+    'images' => [
+        'video' => '/img/images/video.jpg',
+        'audio' => '/img/images/audio.png',
+    ],
+
     'directories' => [
         'files' => '/uploads/files/'
     ],

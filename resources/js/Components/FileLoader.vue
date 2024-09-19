@@ -19,7 +19,7 @@
                             <div class="text" v-if="files != null">Добавить файлы</div>
                         </div>
                     </div>
-                    <input class="inputFile" type="file" name="files" accept="image/*, video/*" multiple @change="onFileChange" />
+                    <input class="inputFile" type="file" name="files" accept="image/*, video/*, audio/*" multiple @change="onFileChange" />
                 </div>
                 <div class="infoFiles">
                     <div class="infoRow tw-grid tw-grid-cols-[200px_1fr]" v-if="files">
@@ -36,7 +36,10 @@
                 <div class="twc-grid xxl:tw-grid-cols-10 xl:tw-grid-cols-8 lg:tw-grid-cols-6 md:tw-grid-cols-4 xs:tw-grid-cols-3 tw-grid-cols-2">
                     <div class="previewFileImage" v-for="item, index in files" :index="index">
                         <div class="btn-close" @click="unsetFile(index)">X</div>
-                        <img :src="getFilePreview(item)" :alt="item.name">
+                        <img :src="getFilePreview(item)" :alt="item.name" v-if="item.type.match(/image\//)">
+                        <img :src="`/img/images/audio.png`" :alt="item.name" v-if="item.type.match(/audio\//)">
+                        <!-- <video v-if="item.type.match(/video\//)"><source :src="getFilePreview(item)" :type="item.type" /></video> -->
+                        <img :src="`/img/images/video.jpg`" :alt="item.name" v-if="item.type.match(/video\//)">
                         <div class="content miniText"><strong>{{ item.name }}</strong></div>
                     </div>
                 </div>
@@ -49,6 +52,8 @@
                 <div class="twc-grid xl:tw-grid-cols-12 lg:tw-grid-cols-10 md:tw-grid-cols-8 xs:tw-grid-cols-4 tw-grid-cols-3">
                     <div class="previewFileImage" v-for="item, index in filesLoaded" :index="index">
                         <img :src="item.src" :alt="item.file">
+                        <!-- <img :src="`/img/images/audio.png`" :alt="item.file" v-if="item.file.match(/audio\//)"> -->
+                        <!-- <img :src="`/img/images/video.jpg`" :alt="item.file" v-if="item.file.match(/video\//)"> -->
                     </div>
                 </div>
             </div>
@@ -172,7 +177,7 @@ export default {
                         _this.unsetFile(i);
                     }).catch(function(error){
                         console.log(error);
-                        let response = error.response;
+                        let response = error.response??{};
                         let status = response.status??'';
                         let message = response.statusText??error.message??'Не известная ошибка';
                         message = message + ' [' + response.data.message + ']';
@@ -207,20 +212,20 @@ export default {
             }
         },
 
-        exceptionsHandler(error){
-            let response = error.response;
-            let status = response.status??0;
-            switch (status){
-                case 413:
-                    window.getAlert('error', 'Ошибка', 'Слишком долгая загрузка файла, проверьте интернет и размер файла')
-                    break;
-                default:
-                    response.statusText
-                        ? window.getAlert('error', 'Ошибка ' + status, response.statusText)
-                        : window.getAlert('error', 'Ошибка ' + status, error);
-                    break;
-            }
-        }
+        // exceptionsHandler(error){
+        //     let response = error.response??{};
+        //     let status = response.status??0;
+        //     switch (status){
+        //         case 413:
+        //             window.getAlert('error', 'Ошибка', 'Слишком долгая загрузка файла, проверьте интернет и размер файла')
+        //             break;
+        //         default:
+        //             response.statusText
+        //                 ? window.getAlert('error', 'Ошибка ' + status, response.statusText)
+        //                 : window.getAlert('error', 'Ошибка ' + status, error);
+        //             break;
+        //     }
+        // }
     },
 }
 </script>

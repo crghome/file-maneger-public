@@ -17,9 +17,9 @@ class IndexController extends Controller
 
     public function resource(){
         $arrData = (object)[
-            'title' => 'Загрузка файлов'
+            'title' => 'Ресурсы'
         ];
 
-        return view('main.views.index', compact('arrData'));
+        return view('main.views.resources', compact('arrData'));
     }
 }

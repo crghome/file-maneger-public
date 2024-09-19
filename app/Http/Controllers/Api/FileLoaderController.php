@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\CropImages;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -45,6 +46,63 @@ class FileLoaderController extends Controller
                     'file' => $filename,
                     'directory' => $fileDirectory,
                     'src' => $fileDirectory . $filename,
+                    'time' => $time,
+                ]
+            );
+        } catch (\Exception $e) {
+            $response['message'] = $e->getMessage();
+        }
+        return response()->json($response);
+    }   
+
+    public function getFiles(Request $request){
+        $response = array('status' => false, 'message' => 'Не предвиденная остановка сервера', 'data' => array());
+        try {
+            $start = microtime(true);
+            if (!$request->isMethod('POST')){ throw new \Exception('Некорректное обращение к серверу'); }
+            
+            $token = $request->_token;
+            
+            $ignored = ['.', '..', 'index.html', 'index.php'];
+            $fileDirectory = config('app.directories.files');
+            $fileDirectoryAbs = $_SERVER['DOCUMENT_ROOT'] . $fileDirectory;
+            if(!file_exists($fileDirectoryAbs)){ throw new \Exception('Нет директории'); }
+
+            $cropImages = new CropImages();
+
+            $files = [];
+            foreach((scandir($fileDirectoryAbs)??[]) AS $file){
+                if(in_array($file, $ignored)) continue;
+                $filetype = mime_content_type($fileDirectoryAbs . $file);
+                switch($filetype){
+                    case preg_match('/image/', $filetype): $prev = $cropImages->cropImages(imagePath: $fileDirectory.$file, createWidth: 200); break;
+                    case preg_match('/video/', $filetype): $prev = config('app.images.video'); break;
+                    case preg_match('/audio/', $filetype): $prev = config('app.images.audio'); break;
+                    default: $prev = config('app.noImage'); break;
+                }
+                $prev = $cropImages->cropImages(imagePath: $fileDirectory.$file, createWidth: 200);
+                if(empty($prev)) $prev = config('app.noImage');
+                $files[] = [
+                    'name' => $file,
+                    'src' => $fileDirectory . $file,
+                    'prev' => $prev,
+                    'type' => $filetype,
+                    'size' => getimagesize($fileDirectoryAbs . $file),
+                    'filemtime' => filemtime($fileDirectoryAbs . $file),
+                    'date' => date('d.m.Y H:i:s', filemtime($fileDirectoryAbs . $file)),
+                ];
+            }
+
+            usort($files, function($a, $b){
+                return (strnatcmp($b["filemtime"], $a["filemtime"]));
+            });
+
+            $time = round(microtime(true) - $start, 4);
+            $response = array(
+                'status' => true, 
+                'message' => 'Файл загружен', 
+                'data' => [
+                    'files' => $files,
                     'time' => $time,
                 ]
             );
