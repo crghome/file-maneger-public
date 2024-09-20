@@ -10,6 +10,7 @@
 /public/thumbs/*
 /public/image-thumbs/*
 /public/images/uploads/*
+/public/zipFile.zip
 /storage/*.key
 /vendor
 .env

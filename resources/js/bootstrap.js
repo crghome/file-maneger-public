@@ -33,3 +33,11 @@ window.exceptionsHandler = function(error){
     }
 }
 
+window.downloadHandler = function(name, filepath){
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = filepath + '?v=' + Math.random();
+    link.click();
+    link.remove();
+}
+

@@ -22,7 +22,8 @@ return [
     ],
 
     'directories' => [
-        'files' => '/uploads/files/'
+        'files' => '/uploads/files/',
+        'zip' => '/uploads/zip/'
     ],
 
     /*

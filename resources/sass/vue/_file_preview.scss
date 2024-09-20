@@ -1,3 +1,7 @@
 .wrapperFilePreview{
     padding: theme('padding.row') 0;
+    .checkbox{
+        width: 25px; height: 25px;
+        cursor: pointer;
+    }
 }

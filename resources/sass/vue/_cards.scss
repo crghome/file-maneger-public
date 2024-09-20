@@ -58,6 +58,10 @@
     .content{
         font-size: 12px;
         font-weight: 600;
+        a{
+            color: rgb(1, 0, 75);
+            text-decoration: underline;
+        }
     }
     &:hover{
         box-shadow: var(--shadow-02);

@@ -30,6 +30,7 @@ export default {
             },
         },
         gap: {
+            'col': '12px',
             'columns': '24px'
         },
         padding: {
