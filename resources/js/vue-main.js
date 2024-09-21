@@ -6,6 +6,7 @@ import AlertBlock from './Components/AlertBlock.vue';
 import HeadContent from './Components/HeadContent.vue';
 import FileLoader from './Components/FileLoader.vue';
 import FilePreview from './Components/FilePreview.vue';
+import AuthPage from './Components/Auth.vue';
 
 const app = createApp({});
 
@@ -33,6 +34,7 @@ app.component('vue-alert-block', AlertBlock);
 app.component('vue-head-content', HeadContent);
 app.component('vue-file-loader', FileLoader);
 app.component('vue-file-preview', FilePreview);
+app.component('vue-auth', AuthPage);
 
 
 // app.use(router).mount('#app-vue-main');

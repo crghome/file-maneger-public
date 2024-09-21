@@ -48,10 +48,13 @@
 </template>
 <script>
 // import axios from 'axios';
+// import Auth from '@/Components/Auth.vue';
 export default {
+    // components: {Auth},
     data() {
         return {
             token: null,
+            sessionId: null,
             arrFiles: Array(),
             selectedFiles: Array(),
             selectedFilesAll: false,
@@ -63,6 +66,7 @@ export default {
     },
     mounted(){
         this.token = document.querySelector('meta[name="csrf-token"]').content;
+        this.sessionId = sessionStorage.getItem("id");
         this.getFiles();
     },
     computed: {
@@ -91,6 +95,7 @@ export default {
 
         downloadFilesZip(){
             try {
+                if(this.sessionId == null){ throw new Error('Иш масленица, доступ получи сначала'); }
                 if(this.selectedFiles.length <= 0){ throw new Error("Не выбраны файлы"); }
 
                 let _this = this;
@@ -129,6 +134,7 @@ export default {
 
         deleteFiles(){
             try {
+                if(this.sessionId == null){ throw new Error('Иш масленица, доступ получи сначала'); }
                 if(this.selectedFiles.length <= 0){ throw new Error("Не выбраны файлы"); }
 
                 let _this = this;

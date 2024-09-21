@@ -83,6 +83,23 @@ php_flag magic_quotes_gpc Off
 
     RewriteEngine On
 
+    SetEnvIf Request_URI ^/resource require_auth=true
+    # Auth stuff
+    AuthUserFile /var/www/htpasswd
+    AuthName "Password Protected"
+    AuthType Basic
+    # Setup a deny/allow
+    Order Deny,Allow
+    # Deny from everyone
+    Deny from all
+    # except if either of these are satisfied
+    Satisfy any
+    # 1. a valid authenticated user
+    Require valid-user
+    # or 2. the "require_auth" var is NOT set
+    Allow from env=!require_auth
+
+
     #RewriteCond %{HTTP_HOST} ^rudomain.xn--p1ai$ [NC]
     #RewriteRule ^(.*)$ https://domain.ru/$1 [R=301,L]
 

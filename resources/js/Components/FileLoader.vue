@@ -68,6 +68,7 @@ export default {
     data() {
         return {
             token: null,
+            sessionId: null,
             files: null,
             filesLoaded: Array(),
             sizeFiles: null,
@@ -85,6 +86,7 @@ export default {
     mounted(){
         // this.token = $('meta[name="csrf-token"]').attr('content');
         this.token = document.querySelector('meta[name="csrf-token"]').content;
+        this.sessionId = sessionStorage.getItem("id");
     },
     computed: {
         filesSize: function(){

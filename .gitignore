@@ -11,6 +11,7 @@
 /public/image-thumbs/*
 /public/images/uploads/*
 /public/zipFile.zip
+/public/.htpasswd
 /storage/*.key
 /vendor
 .env
