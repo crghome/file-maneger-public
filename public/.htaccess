@@ -83,7 +83,8 @@ php_flag magic_quotes_gpc Off
 
     RewriteEngine On
 
-    SetEnvIf Request_URI ^/resource require_auth=true
+    # SetEnvIf Request_URI ^/resource require_auth=true
+    SetEnvIf Request_URI ^/* require_auth=true
     # Auth stuff
     # AuthUserFile C:/SERVER/data/www/file-manadge.dnage/public/.htpasswd
     AuthUserFile /home/s/submit/kolodin.rf/public/.htpasswd

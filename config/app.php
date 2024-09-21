@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'urlLoader' => env('URL_LOADER', 'loader'),
 
     'noImage' => '/img/noImg.jpg',
     'images' => [
