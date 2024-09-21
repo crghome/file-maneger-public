@@ -66,7 +66,7 @@ export default {
     },
     mounted(){
         this.token = document.querySelector('meta[name="csrf-token"]').content;
-        this.sessionId = sessionStorage.getItem("id");
+        this.sessionId = true; //sessionStorage.getItem("id");
         this.getFiles();
     },
     computed: {

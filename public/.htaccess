@@ -85,9 +85,11 @@ php_flag magic_quotes_gpc Off
 
     SetEnvIf Request_URI ^/resource require_auth=true
     # Auth stuff
-    AuthUserFile /var/www/htpasswd
+    # AuthUserFile C:/SERVER/data/www/file-manadge.dnage/public/.htpasswd
+    AuthUserFile /home/s/submit/kolodin.rf/public/.htpasswd
     AuthName "Password Protected"
     AuthType Basic
+    Require valid-user
     # Setup a deny/allow
     Order Deny,Allow
     # Deny from everyone
