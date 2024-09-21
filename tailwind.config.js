@@ -29,14 +29,18 @@ export default {
                 md: '30px',
             },
         },
-        gap: {
-            'col': '12px',
-            'columns': '24px'
-        },
+        // gap: {
+        //     'col': '12px',
+        //     'columns': '24px'
+        // },
         padding: {
             'row': '100px',
         },
         extend: {
+            spacing: {
+                'col': '12px',
+                'columns': '24px'
+            },
             maxWidth: {
                 screen: {
                     'xs': '420px',

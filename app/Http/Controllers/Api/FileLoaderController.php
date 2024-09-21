@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\CropImages;
 use App\Http\Controllers\Controller;
+use App\Services\FileService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use ZipArchive;
@@ -72,39 +73,24 @@ class FileLoaderController extends Controller
             
             $token = $request->_token;
             
-            $ignored = ['.', '..', 'index.html', 'index.php'];
             $fileDirectory = config('app.directories.files');
-            $fileDirectoryAbs = $_SERVER['DOCUMENT_ROOT'] . $fileDirectory;
-            if(!file_exists($fileDirectoryAbs)){ throw new \Exception('Нет директории'); }
 
             $cropImages = new CropImages();
 
-            $files = [];
-            foreach((scandir($fileDirectoryAbs)??[]) AS $file){
-                if(in_array($file, $ignored)) continue;
-                $filetype = mime_content_type($fileDirectoryAbs . $file);
-                switch($filetype){
-                    case preg_match('/image/', $filetype): $prev = $cropImages->cropImages(imagePath: $fileDirectory.$file, createWidth: 200); break;
-                    case preg_match('/video/', $filetype): $prev = config('app.images.video'); break;
-                    case preg_match('/audio/', $filetype): $prev = config('app.images.audio'); break;
-                    default: $prev = config('app.noImage'); break;
-                }
-                $prev = $cropImages->cropImages(imagePath: $fileDirectory.$file, createWidth: 200);
-                if(empty($prev)) $prev = config('app.noImage');
-                $files[] = [
-                    'name' => $file,
-                    'src' => $fileDirectory . $file,
-                    'prev' => $prev,
-                    'type' => $filetype,
-                    'size' => getimagesize($fileDirectoryAbs . $file),
-                    'filesize' => filesize($fileDirectoryAbs . $file),
-                    'filemtime' => filemtime($fileDirectoryAbs . $file),
-                    'date' => date('d.m.Y H:i:s', filemtime($fileDirectoryAbs . $file)),
-                ];
+            $fileRes = FileService::getFilesDirectory(directory: $fileDirectory);
+            if(false == ($fileRes->status??false)){ throw new \Exception($fileRes->message??'Ошибка чтения директории'); };
+
+            $files = $fileRes->files??[];
+            foreach($files AS $file){
+                $prev = $cropImages->cropImages(imagePath: $file->src, createWidth: 200);
+                $file->prev = !empty($prev) ? $prev : $prev = config('app.noImage');
             }
 
+            // usort((array)$files, function($a, $b){
+            //     return (strnatcmp($b["filemtime"], $a["filemtime"]));
+            // });
             usort($files, function($a, $b){
-                return (strnatcmp($b["filemtime"], $a["filemtime"]));
+                return (strnatcmp($b->filemtime, $a->filemtime));
             });
 
             $time = round(microtime(true) - $start, 4);
@@ -133,23 +119,24 @@ class FileLoaderController extends Controller
             $needleFiles = (array)$data->arrFileNames;
             // $token = $data->_token;
             
-            $ignored = ['.', '..', 'index.html', 'index.php'];
             $fileDirectory = config('app.directories.files');
             $fileDirectoryAbs = $_SERVER['DOCUMENT_ROOT'] . $fileDirectory;
             if(!file_exists($fileDirectoryAbs)){ throw new \Exception('Нет директории'); }
+
+            $fileRes = FileService::getFilesDirectory(directory: $fileDirectory, needleName: $needleFiles);
+            if(false == ($fileRes->status??false)){ throw new \Exception($fileRes->message??'Ошибка чтения директории'); };
 
             $files = [];
             $zip = new ZipArchive();
             $fileName = 'zipFile.zip';
             if(file_exists(public_path($fileName))) unlink(public_path($fileName));
             if($zip->open(public_path($fileName), \ZipArchive::CREATE) == TRUE){
-                foreach((scandir($fileDirectoryAbs)??[]) AS $file){
-                    if(in_array($file, $ignored) || !in_array($file, $needleFiles)) continue;
+                foreach(($fileRes->files??[]) AS $file){
                     $files[] = [
-                        'name' => $file,
-                        'src' => $fileDirectory . $file,
+                        'name' => $file->name,
+                        'src' => $file->src,
                     ];
-                    $zip->addFile($fileDirectoryAbs . $file, $file);
+                    $zip->addFile($fileDirectoryAbs . $file->name, $file->name);
                 }
                 $zip->close();
             }
@@ -162,6 +149,44 @@ class FileLoaderController extends Controller
                     'search' => $needleFiles,
                     'files' => $files,
                     'zip' => '/' . $fileName,
+                    'time' => $time,
+                ]
+            );
+        } catch (\Exception $e) {
+            $response['message'] = $e->getMessage();
+        }
+        return response()->json($response);
+    }   
+
+    public function removeFiles(Request $request){
+        $response = array('status' => false, 'message' => 'Не предвиденная остановка сервера', 'data' => array());
+        try {
+            $start = microtime(true);
+            if (!$request->isMethod('POST')){ throw new \Exception('Некорректное обращение к серверу'); }
+            $data = (object)($request->data??[]);
+            if (empty($data->arrFileNames)){ throw new \Exception('Не определены файлы'); }
+            
+            $needleFiles = (array)$data->arrFileNames;
+            // $token = $data->_token;
+            
+            $fileDirectory = config('app.directories.files');
+            $countUnlink = 0;
+
+            $fileRes = FileService::getFilesDirectory(directory: $fileDirectory, needleName: $needleFiles);
+            if(false == ($fileRes->status??false)){ throw new \Exception($fileRes->message??'Ошибка чтения директории'); };
+            foreach(($fileRes->files??[]) AS $file){
+                $fileAbs = $_SERVER['DOCUMENT_ROOT'] . $file->src;
+                if(!file_exists($fileAbs)) continue;
+                unlink($fileAbs);
+                $countUnlink++;
+            }
+
+            $time = round(microtime(true) - $start, 4);
+            $response = array(
+                'status' => true, 
+                'message' => 'Unlinked', 
+                'data' => [
+                    'countUnlink' => $countUnlink,
                     'time' => $time,
                 ]
             );

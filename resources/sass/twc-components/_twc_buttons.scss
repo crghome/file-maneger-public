@@ -52,5 +52,11 @@
             background: #00f;
             box-shadow: var(--shadow-02);
         }
+
+        &.btn-danger{
+            background: rgb(143, 0, 0);
+            &.active, &:hover{ background: rgb(193, 0, 0); }
+            &:active{ background: rgb(81, 0, 0); color: rgb(255, 65, 65); }
+        }
     }
 }

@@ -7,3 +7,4 @@ Route::post('/upload-file', [App\Http\Controllers\Api\FileLoaderController::clas
 
 Route::post('/get-files', [App\Http\Controllers\Api\FileLoaderController::class, 'getFiles'])->name('getFiles');
 Route::post('/get-files-zip', [App\Http\Controllers\Api\FileLoaderController::class, 'getFilesZip'])->name('getFilesZip');
+Route::post('/remove-files', [App\Http\Controllers\Api\FileLoaderController::class, 'removeFiles'])->name('removeFiles');
